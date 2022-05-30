@@ -105,7 +105,7 @@ def handler(gittoken, outkey):
 
     for keywordFile in keywordFiles:
         if "python" in keywordFile: language = "language:python "
-        if "javascript" in keywordFile: language = "language:javascript "
+        if "js" in keywordFile: language = "language:javascript "
         if "go" in keywordFile: language = "language:go "
         if "java" in keywordFile: language = "language:java "
         if "c" in keywordFile: language = "language:c "
