@@ -107,6 +107,8 @@ def handler(gittoken, outkey):
         if "python" in keywordFile: language = "language:python "
         if "javascript" in keywordFile: language = "language:javascript "
         if "go" in keywordFile: language = "language:go "
+        if "java" in keywordFile: language = "language:java "
+        if "c" in keywordFile: language = "language:c "
 
         keywordList = []
         with open("dorks/" + keywordFile, 'r+') as f:
