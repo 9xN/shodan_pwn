@@ -15,8 +15,10 @@ The only tool you'll ever need for free and easy internet reconnaissance!
 ### TODO:
 
 - Add better more clear error messages when; importing modules, handling empty dork file cases, invalid github keys
+- Improved logging and display of found keys instead of only sotring that data in the output file
 - Add config system to save github key and key output storage file
 - Create key output storage file if given parameter for a "preexisting" one does not actually preexist
+- Implement multi-threading (big one)
 
 ## Example usage:
 ![image](./image.png)
