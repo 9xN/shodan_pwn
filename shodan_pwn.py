@@ -19,8 +19,8 @@ try:
     from github import Github
 except ImportError:
     print ('\033[91m[-] you need to install the github module\033[0m')
-    os.system("pip3 install github")
-
+    os.system("pip3 install pygithub")
+    #os.system("pip3 install github")
 
 def print_banner():
 
