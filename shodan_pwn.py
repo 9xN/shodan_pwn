@@ -3,12 +3,6 @@ import sys
 import time
 import datetime
 
-from shodan import Shodan
-from github import Github
-
-if os.name == "nt": OS = "Windows"
-else: OS = "Unix"
-
 try:
     from shodan import Shodan
 except ImportError:
@@ -20,11 +14,8 @@ try:
 except ImportError:
     print ('\033[91m[-] you need to install the github module\033[0m')
     os.system("pip3 install pygithub")
-    #os.system("pip3 install github")
 
-def print_banner():
-
-    box = '''\033[91m
+box = '''\033[91m
                           ┌─┐┬ ┬┌─┐┌┬┐┌─┐┌┐┌   ┌─┐┬ ┬┌┐┌
                           └─┐├─┤│ │ ││├─┤│││   ├─┘││││││
                           └─┘┴ ┴└─┘─┴┘┴ ┴┘└┘───┴  └┴┘┘└┘    
@@ -35,7 +26,29 @@ def print_banner():
        └──────────────────────────────────────────────────────────────────┘
 \033[0m
 '''
-    print(box)
+
+def readenv():
+    try:
+        env_vars = {}
+
+        with open('.env', "r") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=")
+                    env_vars[key] = value.strip()
+        return list(env_vars.values())
+    except FileNotFoundError:
+        print(".env file not found")
+        return False
+        
+def writeenv(github_api_key, path_to_keys_file):
+    keys = ['GITHUB_API_KEY', 'PATH_TO_KEYS_FILE']
+    values = [github_api_key, path_to_keys_file]
+
+    with open('.env', 'w') as env_file:
+        for i in range(len(keys)):
+            env_file.write(f'{keys[i]}={values[i]}\n')
 
 def clean(shodan_path):
     lines = []
@@ -100,7 +113,7 @@ def search(token, shodan_path, keyword, language):
             break
 
 def handler(gittoken, outkey):
-    keywordFiles = os.listdir("dorks/") # ["dorks/javascript.txt"]
+    keywordFiles = os.listdir("dorks/")
     language = None
 
     for keywordFile in keywordFiles:
@@ -128,7 +141,7 @@ def handler(gittoken, outkey):
             exit()
 
 try:
-    if OS == "Windows": os.system("cls")
+    if os.name == "nt": os.system("cls")
     else: os.system("clear")
     ascii_art = '''\033[32m\n                       Started!
                         _______________
@@ -142,11 +155,17 @@ try:
                         //         \\\\
 \033[0m'''
     if len(sys.argv) != 3:
-        print_banner()
-        gitkey = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your github api key \033[38;5;219m~>\033[38;5;111m ")
-        keyout = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your output file that you would like to store found keys in \033[38;5;219m~>\033[38;5;111m ")
-        print(ascii_art)
-        handler(gitkey, keyout)
+        creds = readenv()
+        print(box)
+        if creds[0] == '' or creds[1] == '':
+            gitkey = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your github api key \033[38;5;219m~>\033[38;5;111m ")
+            keyout = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your output file that you would like to store found keys in \033[38;5;219m~>\033[38;5;111m ")
+            writeenv(gitkey, keyout)
+            print(ascii_art)
+            handler(gitkey, keyout)
+        else: 
+            print(ascii_art)
+            handler(creds[0], creds[1])
     else:
         gitkey = sys.argv[1]
         keyout = sys.argv[2]
