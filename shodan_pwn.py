@@ -121,16 +121,25 @@ def handler(gittoken, outkey):
     language = None
 
     for keywordFile in keywordFiles:
-        if "python" in keywordFile: language = "language:python "
-        if "js" in keywordFile: language = "language:javascript "
-        if "go" in keywordFile: language = "language:go "
-        if "java" in keywordFile: language = "language:java "
-        if "c" in keywordFile: language = "language:c "
-
+        if "python" in keywordFile:
+            language = "language:python "
+        elif "js" in keywordFile:
+            language = "language:javascript "
+        elif "go" in keywordFile:
+            language = "language:go "
+        elif "java" in keywordFile:
+            language = "language:java "
+        elif "c" in keywordFile:
+            language = "language:c "
+        else:
+            continue
         keywordList = []
-        with open("dorks/" + keywordFile, 'r+') as f:
+        with open("dorks/" + keywordFile, 'r') as f:
+            if f.readable() and not f.read().strip():
+                continue
+            f.seek(0)
             for l in f.readlines():
-                keywordList.append(l.removesuffix("\n"))
+                keywordList.append(l.strip())
 
         try:
             for keyword in keywordList:
