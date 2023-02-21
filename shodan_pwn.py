@@ -50,6 +50,10 @@ def writeenv(github_api_key, path_to_keys_file):
         for i in range(len(keys)):
             env_file.write(f'{keys[i]}={values[i]}\n')
 
+def cfile(file_name):
+    with open(file_name, "w") as file:
+        file.write("")
+
 def clean(shodan_path):
     lines = []
     keyList = []
@@ -160,15 +164,18 @@ try:
         if creds[0] == '' or creds[1] == '':
             gitkey = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your github api key \033[38;5;219m~>\033[38;5;111m ")
             keyout = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your output file that you would like to store found keys in \033[38;5;219m~>\033[38;5;111m ")
+            cfile(keyout)
             writeenv(gitkey, keyout)
             print(ascii_art)
             handler(gitkey, keyout)
         else: 
             print(ascii_art)
+            cfile(creds[1])
             handler(creds[0], creds[1])
     else:
         gitkey = sys.argv[1]
         keyout = sys.argv[2]
+        cfile(keyout)
         print(ascii_art)
         handler(gitkey, keyout)
 except KeyboardInterrupt:
