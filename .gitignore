@@ -1,0 +1,5 @@
+/dorks
+.env
+*.txt
+*.log
+*.out
