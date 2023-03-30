@@ -15,20 +15,9 @@ except ImportError:
     print ("\033[91m[-] you need to install the github module\033[0m")
     os.system("pip3 install pygithub")
 
-box = """\033[91m
-                          ┌─┐┬ ┬┌─┐┌┬┐┌─┐┌┐┌   ┌─┐┬ ┬┌┐┌
-                          └─┐├─┤│ │ ││├─┤│││   ├─┘││││││
-                          └─┘┴ ┴└─┘─┴┘┴ ┴┘└┘───┴  └┴┘┘└┘    
-               ┌──────────────────────────────────────────────────┐ 
-       ┌───────┤                \033[95mCredits: \033[94mgithub/9xN\033[91m               ├───────┐
-       │       └──────────────────────────────────────────────────┘       │
-       │ \033[93m$ \033[38;5;147mpython3 shodan_pwn.py <github-api-token> <keys.out> \033[92mor\033[38;5;147m prompts\033[91m │
-       └──────────────────────────────────────────────────────────────────┘
-\033[0m
-"""
 dateTime = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-def readenv():
+def read_env():
     try:
         env_vars = {}
 
@@ -43,7 +32,7 @@ def readenv():
         print(".env file not found")
         return False
          
-def writeenv(github_api_key, path_to_keys_file):
+def write_env(github_api_key, path_to_keys_file):
     keys = ["GITHUB_API_KEY", "PATH_TO_KEYS_FILE"]
     values = [github_api_key, path_to_keys_file]
     with open(".env", "w") as env_file:
@@ -164,13 +153,22 @@ try:
                         //         \\\\
 \033[0m"""
     if len(sys.argv) != 3:
-        creds = readenv()
-        print(box)
+        creds = read_env()
+        print("""\033[91m
+                          ┌─┐┬ ┬┌─┐┌┬┐┌─┐┌┐┌   ┌─┐┬ ┬┌┐┌
+                          └─┐├─┤│ │ ││├─┤│││   ├─┘││││││
+                          └─┘┴ ┴└─┘─┴┘┴ ┴┘└┘───┴  └┴┘┘└┘    
+               ┌──────────────────────────────────────────────────┐ 
+       ┌───────┤                \033[95mCredits: \033[94mgithub/9xN\033[91m               ├───────┐
+       │       └──────────────────────────────────────────────────┘       │
+       │ \033[93m$ \033[38;5;147mpython3 shodan_pwn.py <github-api-token> <keys.out> \033[92mor\033[38;5;147m prompts\033[91m │
+       └──────────────────────────────────────────────────────────────────┘
+        \033[0m""")
         if creds[0] == "" or creds[1] == "":
             git_key = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your github api key \033[38;5;219m~>\033[38;5;111m ")
             key_out = input("\033[38;5;128m[\033[38;5;40m+\033[38;5;128m]\033[38;5;111m Enter your output file that you would like to store found keys in \033[38;5;219m~>\033[38;5;111m ")
             cfile(key_out)
-            writeenv(git_key, key_out)
+            write_env(git_key, key_out)
             print(ascii_art)
             handler(git_key, key_out)
         else: 
