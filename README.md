@@ -14,6 +14,7 @@ The only tool you'll ever need for free and easy internet reconnaissance!
 
 ### TODO:
 
+- Change over from having to install the full modules for Github and Shodan to instead use native vanilla python requests to the respective API's directly
 - Add better more clear error messages when; importing modules, handling empty dork file cases, invalid github keys
 - ~Improved logging and display of found keys instead of only sotring that data in the output file~
 - ~Add config system to save github key and key output storage file~
