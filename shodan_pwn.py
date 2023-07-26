@@ -45,12 +45,13 @@ def cfile(file_name):
 
 def clean(shodan_path):
     lines = []
-    keyList = []
+    keySet = set()
     with open(shodan_path, "r+") as f:
         for line in f.readlines():
-            if line.split(" ")[0] not in keyList:
+            key = line.split(" ")[0]
+            if key not in keySet:
                 lines.append(line)
-                keyList.append(line.split(" ")[0])
+                keySet.add(key)
     with open(shodan_path, "w") as f:
         for line in lines:
             f.write(line)
@@ -65,12 +66,10 @@ def check(key, shodan_path):
     except:
         pass
  
-def search(token, shodan_path, keyword, language):
+def search(api, shodan_path, keyword, language):
     total_count = 0
     while True:
         try:
-            api = Github(token)
-            api.per_page = 1
             repos = api.search_code(language + keyword)
             total_count = repos.totalCount
         except Exception as e:
@@ -102,6 +101,8 @@ def search(token, shodan_path, keyword, language):
             break
 
 def handler(git_token, out_key):
+    api = Github(git_token)
+    api.per_page = 1
     keyword_files = os.listdir("dorks/")
     language = None
     total_files = len(keyword_files)
@@ -119,19 +120,14 @@ def handler(git_token, out_key):
             language = "language:c "
         else:
             continue
-        keyword_list = []
-        with open("dorks/" + keyword_file, "r") as f:
-            if f.readable() and not f.read().strip():
-                continue
-            f.seek(0)
-            for l in f.readlines():
-                keyword_list.append(l.strip())
+        with open(os.path.join("dorks", keyword_file), "r") as f:
+            keyword_list = [line.strip() for line in f.readlines() if line.strip()]
         total_dorks = len(keyword_list)
         print(f"\033[38;5;41m[\033[38;5;45m{dateTime}\033[38;5;41m] \033[38;5;219m- \033[38;5;41m[\033[38;5;226mFile {current_file}/{total_files}\033[38;5;41m] \033[38;5;219m- \033[38;5;93mSearching with language \033[38;5;219m~> \033[38;5;41m'\033[38;5;226m{language}\033[38;5;41m'\033[38;5;41m\033[38;5;41m (\033[38;5;226m{keyword_file}\033[38;5;41m)")
         try:
             for current_dork, keyword in enumerate(keyword_list, start=1):
                 print(f"\033[38;5;41m[\033[38;5;45m{dateTime}\033[38;5;41m] \033[38;5;219m- \033[38;5;41m[\033[38;5;226mDork {current_dork}/{total_dorks}\033[38;5;41m] \033[38;5;219m- \033[38;5;93mSearching with query \033[38;5;219m~> \033[38;5;41m'\033[38;5;226m{keyword}\033[38;5;41m'\033[0m")
-                search(git_token, out_key, keyword, language)
+                search(api, out_key, keyword, language)
             clean(out_key)
         except Exception as e:
             print("\n\033[91mError: " + str(e) + "\033[0m\n")
